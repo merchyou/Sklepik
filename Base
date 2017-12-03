@@ -1,0 +1,63 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shop
+{
+    class Base
+    {
+        protected List<Product> products;
+        int id = 0;
+
+        public void AddProduct(Product _product)
+        {
+            id++;
+            Product tmpProduct = new Product();
+            products.Add(tmpProduct);
+        }
+        
+        public void RemoveProduct(int _id)
+        {
+            foreach(Product element in products)
+            {
+                int tmpId = element.Id;
+                if(tmpId == _id)
+                {
+                    products.Remove(element);
+                }
+            }
+        }
+
+        public Product SearchForProduct(int _id)
+        {
+            foreach(Product element in products)
+            {
+                if (_id == element.Id)
+                    return element;
+            }
+            return new Product();
+        }
+
+        public float SumPrices(List<Product> _products)
+        {
+            float sum = 0;
+
+            foreach (Product element in products)
+            {
+                sum += element.Price; 
+            }
+            return sum;
+        }
+
+
+        
+        public void GetPaid(User whoGetsPaid)
+        {
+            float moneyCount = SumPrices(products);
+            whoGetsPaid.Wallet += moneyCount;
+        }
+        
+    }
+}
