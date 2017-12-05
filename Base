@@ -15,6 +15,8 @@ namespace Shop
         {
             id++;
             Product tmpProduct = new Product();
+            tmpProduct = _product;
+            tmpProduct.Id = id;
             products.Add(tmpProduct);
         }
         
@@ -30,6 +32,14 @@ namespace Shop
             }
         }
 
+        public void WriteProducts()
+        {
+            foreach (Product element in products)
+            {
+                element.WriteProduct();
+            }
+        }
+
         public Product SearchForProduct(int _id)
         {
             foreach(Product element in products)
@@ -40,7 +50,7 @@ namespace Shop
             return new Product();
         }
 
-        public float SumPrices(List<Product> _products)
+        public float SumPrices()
         {
             float sum = 0;
 
@@ -53,10 +63,14 @@ namespace Shop
 
 
         
-        public void GetPaid(User whoGetsPaid)
+        public void zeroBasketValue()
         {
-            float moneyCount = SumPrices(products);
-            whoGetsPaid.Wallet += moneyCount;
+            //puts all prices value to 0, so it's not paid twice
+            foreach (Product element in products)
+            {
+                element.Price = 0;
+            }
+
         }
         
     }
