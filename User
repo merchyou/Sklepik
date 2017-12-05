@@ -25,14 +25,6 @@ namespace Shop
         {
 
         }
-
-        public void Registration(string _userName, string _password, int _status)
-        {
-            UserName = _userName;
-            Password = _password;
-            Status = _status;
-        }
-
-        
+    
     }
 }
