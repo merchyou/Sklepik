@@ -8,7 +8,7 @@ namespace Shop
 {
     class Base
     {
-        protected List<Product> products;
+        public List<Product> products;
         int id = 0;
 
         public void AddProduct(Product _product)
@@ -19,18 +19,48 @@ namespace Shop
             tmpProduct.Id = id;
             products.Add(tmpProduct);
         }
-        
+        public Product CreateProductForAdding()
+        {
+            string name;
+            float price;
+            int quantity;
+            Console.WriteLine("Product name: ");
+            name = Console.ReadLine();
+            Console.WriteLine("Product price: ");
+            price = float.Parse(Console.ReadLine());
+            Console.WriteLine("Quantity: ");
+            quantity = Convert.ToInt32(Console.ReadLine());
+            Product tmpProduct = new Product(name, price, quantity);
+
+            return tmpProduct;
+        }
+
         public void RemoveProduct(int _id)
         {
-            foreach(Product element in products)
-            {
-                int tmpId = element.Id;
-                if(tmpId == _id)
-                {
-                    products.Remove(element);
-                }
-            }
+            Product tmpProduct;
+
+            tmpProduct = SearchForProduct(_id);
+            Console.WriteLine("Items to remove: ");
+            int items = Convert.ToInt32(Console.ReadLine());
+            
+            if (items < QuantityCheck(_id)) //delete given quantity of products
+                tmpProduct.Quantity -= items;
+            
+            else if (items == QuantityCheck(_id)) //if quantity=0 delete product from list 
+                products.Remove(SearchForProduct(_id));
+
+            else
+                Console.WriteLine("You can't delete more products than available!");
+
         }
+
+        public int QuantityCheck(int _id)
+        {
+            Product element = SearchForProduct(_id);
+            int tmpQuantity = element.Quantity;
+            return tmpQuantity;
+        }
+
 
         public void WriteProducts()
         {
@@ -50,6 +80,19 @@ namespace Shop
             return new Product();
         }
 
+
+        public void PayForProductsInBasket(User user, float shopAccount)
+        {
+            float tmpSum = SumPrices();
+            if (user.Wallet >= tmpSum)
+            {
+                user.Wallet -= tmpSum;
+                shopAccount += tmpSum;
+                ZeroBasketValue();
+            }
+
+        }
+
         public float SumPrices()
         {
             float sum = 0;
@@ -63,7 +106,7 @@ namespace Shop
 
 
         
-        public void zeroBasketValue()
+        public void ZeroBasketValue()
         {
             //puts all prices value to 0, so it's not paid twice
             foreach (Product element in products)
