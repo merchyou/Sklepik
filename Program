@@ -10,234 +10,68 @@ namespace Shop
     {
         static void Main(string[] args)
         {
-            Base ShopBase = new Base();
-            Base Basket = new Base();
-            List<User> users = new List<User>();
-            User admin;
-            User regularUser;
             float ShopEarnings = 0;
 
+            Users Users = new Users();
+            Base ShopBase = new Base();
+            Base Basket = new Base();
+        
 
-            Console.WriteLine(NotLogedIn());
 
-            void NotLogedIn()
+            User UserLogedIn = Users.Login();
+
+
+            //tak to zrobić
+            //Basket.PayForProductsInBasket(UserLogedIn, ShopEarnings);
+
+            while(true)
             {
-                Console.WriteLine("Welcome in the shop! Chose what to do: ");
-                Console.WriteLine("1. Register");
-                Console.WriteLine("2. Login");
-                int logChoice = Convert.ToInt32(Console.ReadLine());
-
-                switch (logChoice)
+                Users.ShowUserOptions();
+                int userChoice = Convert.ToInt32(Console.ReadLine());
+                switch (userChoice)
                 {
                     case 1:
-                        {
-                            Console.WriteLine("Please start rejestration: ");
-
-                            Console.WriteLine("Login: ");
-                            string Login = Console.ReadLine();
-
-                            Console.WriteLine("Password: ");
-                            string Password = Console.ReadLine();
-
-                            Console.WriteLine("contents of your wallet: ");
-                            float WalletContent = float.Parse(Console.ReadLine());
-
-                            //register as admin or user
-                            int Status = 0;
-                            while (Status != 1 || Status != 2)
+                        { //add product to the base
+                            if (UserLogedIn.Status == "admin")
                             {
-                                Console.WriteLine("#1 admin or #2 regular user (put in number): ");
-                                Status = Convert.ToInt32(Console.ReadLine());
+                                ShopBase.AddProduct(ShopBase.CreateProductForAdding());
                             }
-                            User tmpUser = new User(Login, Password, WalletContent, Status);
-                            users.Add(tmpUser);
+                            else
+                            {
+                                Console.WriteLine("You need to be an administrator to operate on base.");
+                            }
 
-                            NotLogedIn();
-                            break;
+                                break;
                         }
                     case 2:
-                        {
-                            Console.WriteLine("Login: ");
-                            string tmpLogin = Console.ReadLine();
+                        {//Remove product from base
 
-                            Console.WriteLine("Password: ");
-                            string tmpPassword = Console.ReadLine();
-
-
-                            //based on status go to admins options or user options
-                            foreach (User element in users)
-                            {
-                                if (element.Login == tmpLogin && element.Password == tmpPassword && element.Status == 1)
-                                {
-                                    admin = element;
-                                    Admin();
-                                }
-
-                                else if (element.Login == tmpLogin && element.Password == tmpPassword && element.Status == 2)
-                                {
-                                    regularUser = element;
-                                    User();
-                                }
-
-                                else
-                                {
-                                    Console.WriteLine("No such user found. Possibly wrong password or login");
-                                    NotLogedIn();
-                                }
-                            }
+                            int _id;
+                            Console.WriteLine("Id of product to remove: ");
+                            _id = Convert.ToInt32(Console.ReadLine());
+                            ShopBase.RemoveProduct(_id);
 
 
                             break;
                         }
-                    default:
-                        {
-                            Console.WriteLine("You chose valid option!");
-                            break;
-                        }
-                }
-            }
 
-
-
-
-            void User()
-            {
-                Console.WriteLine("Chose what to do: ");
-                Console.WriteLine("1. Show All products in base");
-                Console.WriteLine("2. Add product to a basket");
-                Console.WriteLine("3. Remove product from a basket");
-                Console.WriteLine("4. Show All products in basket");
-                Console.WriteLine("5. Show my wallet content");
-                Console.WriteLine("6. Pay for products in basket");
-                Console.WriteLine("7. logout");
-
-                int adminChoice = Convert.ToInt32(Console.ReadLine());
-                switch (adminChoice)
-                {
-                    case 1:
-                        {
+                    case 3:
+                        { //Show All products in base
                             ShopBase.WriteProducts();
                             break;
                         }
-                    case 2:
-                        {
-                            int tmpId;
-                            Product tmpProduct;
-                            Console.WriteLine("Give me Id of product you want to add to your basket:");
-                            tmpId = Convert.ToInt32(Console.ReadLine());
-                            tmpProduct = ShopBase.SearchForProduct(tmpId);
-                            Basket.AddProduct(tmpProduct);
 
-                            break;
-                        }
-                    case 3:
-                        {
-                            int tmpId;
-                            Console.WriteLine("Id of product you want to remove from basket:");
-                            tmpId = Convert.ToInt32(Console.ReadLine());
-                            Basket.RemoveProduct(tmpId);
-                            break;
-                        }
                     case 4:
                         {
-                            Basket.WriteProducts();
+
                             break;
                         }
-                    case 5:
-                        {
-                            Console.WriteLine(regularUser.Wallet + "PLN");
-                            break;
-                        }
-                    case 6:
-                        {
-                            float tmpBasketValue = Basket.SumPrices();
-                            if (tmpBasketValue >= regularUser.Wallet)
-                            {
-                                ShopEarnings += tmpBasketValue;
-                                regularUser.Wallet -= tmpBasketValue;
-                                // putting all prices in basket to 0, so it's not paid for twice.
-                                Basket.zeroBasketValue();
-                            }
-                            else
-                                Console.WriteLine("Sorry, not enough money in your wallet");
-                            break;
-                        }
-                    case 7:
-                        {
-                            regularUser = new User();
-                            NotLogedIn();
-                            break;
-                        }
-                    default:
-                        {
-                            Console.WriteLine("You chose valid option!");
-                            break;
-                        }
-                }
-
-
-                void Admin()
-                {
-                    Console.WriteLine("Chose what to do: ");
-                    Console.WriteLine("1. Add product to the base");
-                    Console.WriteLine("2. Remove product from base");
-                    Console.WriteLine("3. Show All products in base");
-                    Console.WriteLine("4. Show my earnings");
-                    Console.WriteLine("5. logout");
-
-                    int adminChoice = Convert.ToInt32(Console.ReadLine());
-                    switch (adminChoice)
-                    {
-                        case 1:
-                            {
-                                string name;
-                                float price;
-                                int quantity;
-                                Console.WriteLine("Product name: ");
-                                name = Console.ReadLine();
-                                Console.WriteLine("Product price: ");
-                                price = float.Parse(Console.ReadLine());
-                                Console.WriteLine("Quantity: ");
-                                quantity = Convert.ToInt32(Console.ReadLine());
-                                Product tmpProduct = new Product(name, price, quantity);
-                                ShopBase.AddProduct(tmpProduct);
-
-                                break;
-                            }
-                        case 2:
-                            {
-                                int tmpId;
-                                Console.WriteLine("Id of product you want to remove:");
-                                tmpId = Convert.ToInt32(Console.ReadLine());
-                                ShopBase.RemoveProduct(tmpId);
-                                break;
-                            }
-
-                        case 3:
-                            {
-                                ShopBase.WriteProducts();
-                                break;
-                            }
-                        case 4:
-                            {
-                                Console.WriteLine(ShopEarnings + "PLN");
-                                break;
-                            }
-                        case 5:
-                            {
-                                admin = new User();
-                                NotLogedIn();
-                                break;
-                            }
-                        default:
-                            {
-                                Console.WriteLine("You chose valid option!");
-                                break;
-                            }
-
-                    }
                 }
             }
+
         }
+
+            
+        
     }
 }
