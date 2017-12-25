@@ -11,7 +11,7 @@ namespace Shop
         public List<Product> products;
         int id = 0;
 
-        public void AddProduct(Product _product)
+        public void AddProduct(Product _product) //adding product to base
         {
             id++;
             Product tmpProduct = new Product();
@@ -19,6 +19,20 @@ namespace Shop
             tmpProduct.Id = id;
             products.Add(tmpProduct);
         }
+
+        public void AddProductToBasket(int _id)
+        {
+            Product tmpProduct = SearchForProduct(_id);
+            Console.WriteLine("How meny items?");
+            int items = Convert.ToInt32(Console.ReadLine());
+            if(items < tmpProduct.Quantity)
+            {
+                tmpProduct.Quantity = items;
+                AddProduct(tmpProduct);
+
+            }
+        }
+
         public Product CreateProductForAdding()
         {
             string name;
@@ -34,6 +48,7 @@ namespace Shop
 
             return tmpProduct;
         }
+
 
         public void RemoveProduct(int _id)
         {
@@ -81,9 +96,9 @@ namespace Shop
         }
 
 
-        public void PayForProductsInBasket(User user, float shopAccount)
+        public void PayForProductsInBasket(User user, double shopAccount)
         {
-            float tmpSum = SumPrices();
+            double tmpSum = SumPrices();
             if (user.Wallet >= tmpSum)
             {
                 user.Wallet -= tmpSum;
@@ -93,15 +108,18 @@ namespace Shop
 
         }
 
-        public float SumPrices()
+        public double SumPrices()
         {
             float sum = 0;
+            float PriceTimesQuantitiOfProduct;
 
             foreach (Product element in products)
             {
-                sum += element.Price; 
+                PriceTimesQuantitiOfProduct = element.Quantity * element.Price;
+                sum += PriceTimesQuantitiOfProduct;
             }
-            return sum;
+            double finalSum = Math.Round(sum, 2);
+            return finalSum;
         }
 
 
@@ -116,5 +134,7 @@ namespace Shop
 
         }
         
+        
     }
 }
+
