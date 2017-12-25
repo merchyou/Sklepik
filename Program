@@ -20,10 +20,6 @@ namespace Shop
 
             User UserLogedIn = Users.Login();
 
-
-            //tak to zrobić
-            //Basket.PayForProductsInBasket(UserLogedIn, ShopEarnings);
-
             while(true)
             {
                 Users.ShowUserOptions();
@@ -44,13 +40,18 @@ namespace Shop
                                 break;
                         }
                     case 2:
-                        {//Remove product from base
-
-                            int _id;
-                            Console.WriteLine("Id of product to remove: ");
-                            _id = Convert.ToInt32(Console.ReadLine());
-                            ShopBase.RemoveProduct(_id);
-
+                         {//Remove product from base
+                            if (UserLogedIn.Status == "admin")
+                            {
+                                int _id;
+                                Console.WriteLine("Id of product to remove: ");
+                                _id = Convert.ToInt32(Console.ReadLine());
+                                ShopBase.RemoveProduct(_id);
+                            }
+                            else
+                            {
+                                Console.WriteLine("You need to be loged as an administrator to operate on base.");
+                            }
 
                             break;
                         }
@@ -62,8 +63,21 @@ namespace Shop
                         }
 
                     case 4:
+                        { // Add product to a basket
+                            int _id;
+                            Console.WriteLine("Id of product: ");
+                            _id = Convert.ToInt32(Console.ReadLine());
+                            Basket.AddProduct(ShopBase.SearchForProduct(_id));
+                            break;
+                        }
+                        case 9:
                         {
-
+                            Users.Register();
+                            break;
+                        }
+                    case 10:
+                        {
+                            UserLogedIn = Users.Login();
                             break;
                         }
                 }
