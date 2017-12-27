@@ -28,7 +28,7 @@ namespace Shop
 
         public void WriteProduct()
         {
-            Console.WriteLine("Name: " + Name + "\nPrice: " + Price + "\nQuantity: " + Quantity + "Id: "+Id);
+            Console.WriteLine("Name: " + Name + "\nPrice: " + Price + "\nQuantity: " + Quantity + "\nId: "+Id + "\n");
         }
     }
 }
