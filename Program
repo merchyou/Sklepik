@@ -15,18 +15,21 @@ namespace Shop
             Users Users = new Users();
             Base ShopBase = new Base();
             Base Basket = new Base();
-        
 
 
-            User UserLogedIn = Users.Login();
+            User UserLogedIn = new User();
+
+
+            //tak to zrobić
+            //Basket.PayForProductsInBasket(UserLogedIn, ShopEarnings);
 
             while(true)
             {
                 Users.ShowUserOptions();
-                int userChoice = Convert.ToInt32(Console.ReadLine());
+                char userChoice = Convert.ToChar(Console.ReadLine());
                 switch (userChoice)
                 {
-                    case 1:
+                    case '1':
                         { //add product to the base
                             if (UserLogedIn.Status == "admin")
                             {
@@ -34,13 +37,13 @@ namespace Shop
                             }
                             else
                             {
-                                Console.WriteLine("You need to be an administrator to operate on base.");
+                                Console.WriteLine("You need to be loged as an administrator to operate on base.");
                             }
 
                                 break;
                         }
-                    case 2:
-                         {//Remove product from base
+                    case '2':
+                        {//Remove product from base
                             if (UserLogedIn.Status == "admin")
                             {
                                 int _id;
@@ -56,28 +59,60 @@ namespace Shop
                             break;
                         }
 
-                    case 3:
+                    case '3':
                         { //Show All products in base
                             ShopBase.WriteProducts();
                             break;
                         }
 
-                    case 4:
+                    case '4':
                         { // Add product to a basket
                             int _id;
                             Console.WriteLine("Id of product: ");
                             _id = Convert.ToInt32(Console.ReadLine());
-                            Basket.AddProduct(ShopBase.SearchForProduct(_id));
+                            Product tmpProduct = ShopBase.SearchForProduct(_id);
+                            Basket.AddProductToBasket(tmpProduct, ShopBase);
+                            //Basket.AddProduct(ShopBase.SearchForProduct(_id));
                             break;
                         }
-                        case 9:
+                    case '5':
+                        { //Remove product from a basket
+                            int _id;
+                            _id = Convert.ToInt32(Console.ReadLine());
+                            Product tmpProduct = ShopBase.SearchForProduct(_id);
+                            Console.WriteLine("Id of product to remove: ");
+                            Basket.RemoveProduct(_id);
+                            break;
+                        }
+                    case '6':
+                        { //Show All products in basket
+                            Basket.WriteProducts();
+                            break;
+                        }
+                    case '7':
+                        { //Show my wallet content
+                            Console.WriteLine(UserLogedIn.Wallet);
+                            break;
+                        }
+                    case '8':
+                        { //Pay for products in basket
+                            Basket.PayForProductsInBasket(UserLogedIn, ShopEarnings);
+                            break;
+                        }
+                    case '9':
                         {
                             Users.Register();
                             break;
                         }
-                    case 10:
+                    case '0':
                         {
                             UserLogedIn = Users.Login();
+                            Console.WriteLine("Loged in as: " + UserLogedIn.Login);
+                            break;
+                        }
+                    default:
+                        {
+                            Console.WriteLine("That's not an option. Please use one of options (numbers)");
                             break;
                         }
                 }
