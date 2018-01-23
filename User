@@ -1,0 +1,30 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shop
+{
+    class User
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public float Wallet { get; set; }
+        public int Status { get; set; }
+
+        public User(string _userName, string _password, float _wallet, int _status)
+        {
+            UserName = _userName;
+            Password = _password;
+            Wallet = _wallet;
+            Status = _status;
+        }
+
+        public User()
+        {
+
+        }
+    
+    }
+}

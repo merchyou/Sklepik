@@ -1,0 +1,75 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shop
+{
+    class Users
+    {
+        List<User> usersList = new List<User>();
+
+        public User Login()
+        {
+            Console.WriteLine("Login: ");
+            string _login = Console.ReadLine();
+            Console.WriteLine("Password: ");
+            string _password = Console.ReadLine();
+
+            //find user
+            foreach (User person in usersList)
+            {
+                if (_login == person.Login && _password == person.Password)
+                    return person;
+                else
+                    Console.WriteLine("No valid user found. Check your login and password and try again.");
+            }
+
+            return new User();
+        }
+
+
+        public void Register()
+        {
+            //take new user informations
+            Console.WriteLine("Login: ");
+            string _login = Console.ReadLine();
+            Console.WriteLine("Password: ");
+            string _password = Console.ReadLine();
+            Console.WriteLine("Wallet content: ");
+            float _wallet = float.Parse(Console.ReadLine());
+            Console.WriteLine("Password: ");
+            string _status = Console.ReadLine();
+
+            //chceck if login already taken
+            foreach (User person in usersList)
+            {
+                if (_login == person.Login)
+                    Console.WriteLine("Login already taken.");
+                else
+                {
+                    //add new user to users list
+                    User tmpUser = new User(_login, _password, _wallet, _status);
+                    usersList.Add(tmpUser);
+                }
+            }
+
+        }
+
+
+        public void ShowUserOptions()
+        {
+            Console.WriteLine("Chose what to do: ");
+            Console.WriteLine("1. Add product to the base"); //ristrict - only admin
+            Console.WriteLine("2. Remove product from base"); //ristrict - only admin
+            Console.WriteLine("3. Show All products in base");
+            Console.WriteLine("4. Add product to a basket");
+            Console.WriteLine("5. Remove product from a basket");
+            Console.WriteLine("6. Show All products in basket");
+            Console.WriteLine("7. Show my wallet content");
+            Console.WriteLine("8. Pay for products in basket");
+            Console.WriteLine("9. logout");
+        }
+    }
+}

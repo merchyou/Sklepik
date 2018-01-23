@@ -1,0 +1,176 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shop
+{
+    class Base
+    {
+        public List<Product> products= new List<Product>();
+        int id = 0;
+
+        public void AddProduct(Product _product) //adding product to base
+        {
+            id++;
+            Product tmpProduct = new Product();
+            tmpProduct = _product;
+            tmpProduct.Id = id;
+            products.Add(tmpProduct);
+        }
+
+        public void AddProductToBasket(Product _product, Base _base)
+        {
+            Product tmpProduct = _product;
+            Console.WriteLine("How meny items?");
+            int items = Convert.ToInt32(Console.ReadLine());
+            if(items < tmpProduct.Quantity)
+            {
+                tmpProduct.Quantity = items;
+                AddProduct(tmpProduct);
+            }
+            else if(items == tmpProduct.Quantity)
+            {
+                tmpProduct.Quantity = items;
+                AddProduct(tmpProduct);
+                _base.RemoveProduct(tmpProduct.Id);
+            }
+            else
+            {
+                Console.WriteLine("You can't add more items to your basket than is available in base");
+            }
+        }
+
+        public Product CreateProductForAdding()
+        {
+            string name;
+            double price;
+            int quantity;
+            Console.WriteLine("Product name: ");
+            name = Console.ReadLine();
+            Console.WriteLine("Product price: ");
+            price = double.Parse(Console.ReadLine());
+            Console.WriteLine("Quantity: ");
+            quantity = Convert.ToInt32(Console.ReadLine());
+            Product tmpProduct = new Product(name, price, quantity);
+
+            return tmpProduct;
+        }
+
+
+        public void RemoveProduct(int _id)
+        {
+            Product tmpProduct;
+
+            tmpProduct = SearchForProduct(_id);
+            Console.WriteLine("Items to remove: ");
+            int items = Convert.ToInt32(Console.ReadLine());
+            if (items < QuantityCheck(_id)) //delete given quantity of products
+            {
+                tmpProduct.Quantity -= items;
+            }
+            else if (items == QuantityCheck(_id)) //if quantity=0 delete product from list 
+            {
+                products.Remove(SearchForProduct(_id));
+            }
+            else
+            {
+                Console.WriteLine("You can't delete more products than available!");
+            }    
+        }
+        
+        public void RemoveProductFromBasket(Product _product, Base _base)
+        {
+            Product tmpProduct = _product;
+            
+            Console.WriteLine("Items to remove: ");
+            int items = Convert.ToInt32(Console.ReadLine());
+            if (items < tmpProduct.Quantity) //delete given quantity of products
+            {
+                tmpProduct.Quantity -= items;
+            }
+            else if (items == tmpProduct.Quantity) //if quantity=0 delete product from list 
+            {
+                products.Remove(tmpProduct);
+            }
+            else
+            {
+                Console.WriteLine("You can't delete more products than available!");
+            }
+
+            Product productBackToBase = tmpProduct;
+            productBackToBase.Quantity = items;
+            _base.AddProduct(productBackToBase);
+
+        }
+
+            public int QuantityCheck(int _id)
+        {
+            Product element = SearchForProduct(_id);
+            int tmpQuantity = element.Quantity;
+            return tmpQuantity;
+        }
+
+
+        public void WriteProducts()
+        {
+            foreach (Product element in products)
+            {
+                element.WriteProduct();
+            }
+        }
+
+        public Product SearchForProduct(int _id)
+        {
+            foreach(Product element in products)
+            {
+                if (_id == element.Id)
+                    return element;
+            }
+            return new Product();
+        }
+
+
+        public void PayForProductsInBasket(User user, double shopAccount)
+        {
+            double tmpSum = SumPrices();
+            if (user.Wallet >= tmpSum)
+            {
+                user.Wallet -= tmpSum;
+                shopAccount += tmpSum;
+                ZeroBasketValue();
+            }
+
+        }
+
+        public double SumPrices()
+        {
+            double sum = 0;
+            double PriceTimesQuantitiOfProduct;
+
+            foreach (Product element in products)
+            {
+                PriceTimesQuantitiOfProduct = element.Quantity * element.Price;
+                sum += PriceTimesQuantitiOfProduct;
+            }
+            double finalSum = Math.Round(sum, 2);
+            return finalSum;
+        }
+
+
+        
+        public void ZeroBasketValue()
+        {
+            //puts all prices value to 0, so it's not paid twice
+            foreach (Product element in products)
+            {
+                element.Price = 0;
+            }
+
+        }
+        
+        
+    }
+}
+
